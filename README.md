@@ -7,6 +7,6 @@ Teensy 3.6 https://www.pjrc.com/store/teensy36.html
 
 Teensy Audio Library https://www.pjrc.com/teensy/td_libs_Audio.html
 
-Audio Adapter Board https://www.pjrc.com/store/teensy3_audio.html
+Audio Adaptor Board https://www.pjrc.com/store/teensy3_audio.html
 
 You will find a schematic within the repository. The schematic contains additional parts for power supply and MIDI interface. The synthesizer uses a MIDI keyboard to control it. A description of the used MIDI codes are part of the repository.
