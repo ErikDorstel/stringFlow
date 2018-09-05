@@ -13,4 +13,15 @@ You will find a schematic within the repository. The schematic contains addition
 
 The synthesizer uses a MIDI keyboard to control it. The following MIDI codes are used:
 
-NoteOn 32 to 
+NoteOn 36 to 47:    set chord C3 to B3
+NoteOn 48 to 50:    set chord C4 to B4
+NoteOn 60 to 71:    set chord C5 to C6
+NoteOn 73:          set major chord
+NoteOn 75:          set minor chord
+NoteOn 78:          strum down
+NoteOn 80:          strum up
+NoteOn 82:          strum down/up
+NoteOn 85:          start/stop rhythmus 1
+NoteOn 87:          start/stop rhythmus 2
+controller 1:       set strum delay
+controller 7:       set pick delay
