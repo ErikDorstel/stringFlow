@@ -14,5 +14,5 @@ NoteOn 76: pick string 3
 NoteOn 77: pick string 4
 NoteOn 79: pick string 5
 NoteOn 81: pick string 6
-controller 1: set strum delay
-controller 7: set pick delay
+Controller 1: set strum delay
+Controller 7: set pick delay
