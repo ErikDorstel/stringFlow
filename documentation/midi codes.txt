@@ -1,6 +1,6 @@
 NoteOn 36 to 47: set chord C3 to B3
 NoteOn 48 to 50: set chord C4 to B4
-NoteOn 60 to 71: set chord C5 to C6
+NoteOn 60 to 71: set chord C5 to B5
 NoteOn 73: set major chord
 NoteOn 75: set minor chord
 NoteOn 78: strum down
