@@ -21,7 +21,7 @@ AudioConnection          patchCord7(string6, 0, mixer2, 2);
 AudioConnection          patchCord8(mixer2, 0, i2s1, 0);
 AudioConnection          patchCord9(mixer2, 0, i2s1, 1);
 AudioControlSGTL5000     sgtl5000_1;
-IntervalTimer myTimer;
+IntervalTimer            myTimer;
 
 byte pick_delay=5; volatile byte strum_dir=0; byte chord_tone=48; byte chord_note=0; float chord_velocity=1; const int* chord=&maj_chord1[0][0];
 const int* rhythm=&rhythm1[0]; volatile int rhythm_step=-1; int strum_delay=400;
@@ -29,14 +29,9 @@ const int* rhythm=&rhythm1[0]; volatile int rhythm_step=-1; int strum_delay=400;
 void setup() {
   Serial1.begin(31250,SERIAL_8N1);
   AudioMemory(15);
-  sgtl5000_1.enable();
-  sgtl5000_1.volume(0.6);
-  mixer1.gain(0, 0.15);
-  mixer1.gain(1, 0.15);
-  mixer1.gain(2, 0.15);
-  mixer1.gain(3, 0.15);
-  mixer2.gain(1, 0.15);
-  mixer2.gain(2, 0.15);
+  sgtl5000_1.enable(); sgtl5000_1.volume(0.6);
+  mixer1.gain(0, 0.15); mixer1.gain(1, 0.15); mixer1.gain(2, 0.15);
+  mixer1.gain(3, 0.15); mixer2.gain(1, 0.15); mixer2.gain(2, 0.15);
   delay(700); }
 
 void loop() {
@@ -56,17 +51,18 @@ void MIDIsetNoteOn(byte channel, byte tone, float velocity) {
   if (tone>=36 and tone<72) { chord_tone=tone+12; chord_note=chord_tone%12; }
   if (tone==73) { if (chord==&maj_chord1[0][0]) { chord=&maj_chord2[0][0]; } else { chord=&maj_chord1[0][0]; } }
   if (tone==75) { if (chord==&min_chord1[0][0]) { chord=&min_chord2[0][0]; } else { chord=&min_chord1[0][0]; } }
-  if (tone==78) { strumDown(); strum_dir=1; }
-  if (tone==80) { strumUp(); strum_dir=0; }
-  if (tone==82) { if (strum_dir==0) { strumDown(); strum_dir=1; } else { strumUp(); strum_dir=0; } }
+  if (tone==78) { doWaitRhythmus(); strumDown(); strum_dir=1; }
+  if (tone==80) { doWaitRhythmus(); strumUp(); strum_dir=0; }
+  if (tone==82) { doWaitRhythmus(); if (strum_dir==0) { strumDown(); strum_dir=1; } else { strumUp(); strum_dir=0; } }
   if (tone==85) { if (rhythm_step==-1) { rhythm=&rhythm1[0]; rhythm_step=0; myTimer.begin(doRhythmus,1); } else { myTimer.end(); rhythm_step=-1; } }
   if (tone==87) { if (rhythm_step==-1) { rhythm=&rhythm2[0]; rhythm_step=0; myTimer.begin(doRhythmus,1); } else { myTimer.end(); rhythm_step=-1; } }
-  if (tone==72) { pick1(); }
-  if (tone==74) { pick2(); }
-  if (tone==76) { pick3(); }
-  if (tone==77) { pick4(); }
-  if (tone==79) { pick5(); }
-  if (tone==81) { pick6(); } }
+  if (tone==90) { if (rhythm_step==-1) { rhythm=&rhythm3[0]; rhythm_step=0; myTimer.begin(doRhythmus,1); } else { myTimer.end(); rhythm_step=-1; } }
+  if (tone==72) { doWaitRhythmus(); pick1(); }
+  if (tone==74) { doWaitRhythmus(); pick2(); }
+  if (tone==76) { doWaitRhythmus(); pick3(); }
+  if (tone==77) { doWaitRhythmus(); pick4(); }
+  if (tone==79) { doWaitRhythmus(); pick5(); }
+  if (tone==81) { doWaitRhythmus(); pick6(); } }
 
 void MIDIsetNoteOff(byte channel, byte tone, byte velocity) { }
 
@@ -100,3 +96,6 @@ void doRhythmus() {
   else if (*(rhythm+rhythm_step)==4) { rhythm_step++; pick4(); myTimer.begin(doRhythmus,pick_delay*1000); }
   else if (*(rhythm+rhythm_step)==5) { rhythm_step++; pick5(); myTimer.begin(doRhythmus,pick_delay*1000); }
   else if (*(rhythm+rhythm_step)==6) { rhythm_step++; pick6(); myTimer.begin(doRhythmus,pick_delay*1000); } }
+
+void doWaitRhythmus() {
+  if (rhythm_step>-1) { rhythm_step=0; myTimer.begin(doRhythmus,1000000); } }
