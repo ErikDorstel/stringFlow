@@ -23,8 +23,9 @@ AudioConnection          patchCord9(mixer2, 0, i2s1, 1);
 AudioControlSGTL5000     sgtl5000_1;
 IntervalTimer            myTimer;
 
-byte pick_delay=5; volatile byte strum_dir=0; byte chord_tone=48; byte chord_note=0; float chord_velocity=1; const int* chord=&maj_chord1[0][0];
-const int* rhythm=&rhythm1[0]; volatile int rhythm_step=-1; int strum_delay=300;
+byte pick_delay=5; int strum_delay=300; volatile byte strum_dir=0;
+const int* chord=&maj_chord1[0][0]; byte chord_tone=48; byte chord_note=0; float chord_velocity=1;
+const int* rhythm=&rhythm1[0]; volatile int rhythm_step=-1;
 
 void setup() {
   Serial1.begin(31250,SERIAL_8N1);
