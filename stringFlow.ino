@@ -24,7 +24,7 @@ AudioControlSGTL5000     sgtl5000_1;
 IntervalTimer            myTimer;
 
 byte pick_delay=5; volatile byte strum_dir=0; byte chord_tone=48; byte chord_note=0; float chord_velocity=1; const int* chord=&maj_chord1[0][0];
-const int* rhythm=&rhythm1[0]; volatile int rhythm_step=-1; int strum_delay=400;
+const int* rhythm=&rhythm1[0]; volatile int rhythm_step=-1; int strum_delay=300;
 
 void setup() {
   Serial1.begin(31250,SERIAL_8N1);
@@ -36,7 +36,6 @@ void setup() {
 
 void loop() {
   byte MIDIin; static byte MIDIstatus=0; static byte MIDIchannel=0; static byte MIDIpara1=0; static byte MIDIpara2=0;
-
   if (Serial1.available() > 0) { MIDIin = Serial1.read();
     if ((MIDIin & 128) == 128) { MIDIstatus=MIDIin & 240; MIDIchannel=MIDIin & 15; MIDIpara1=255; MIDIpara2=255; } else {
     if (MIDIpara1==255) { MIDIpara1=MIDIin; } else if (MIDIpara2==255) { MIDIpara2=MIDIin;
@@ -55,8 +54,9 @@ void MIDIsetNoteOn(byte channel, byte tone, float velocity) {
   if (tone==80) { doWaitRhythmus(); strumUp(); strum_dir=0; }
   if (tone==82) { doWaitRhythmus(); if (strum_dir==0) { strumDown(); strum_dir=1; } else { strumUp(); strum_dir=0; } }
   if (tone==85) { if (rhythm_step==-1) { rhythm=&rhythm1[0]; rhythm_step=0; myTimer.begin(doRhythmus,1); } else { myTimer.end(); rhythm_step=-1; } }
-  if (tone==87) { if (rhythm_step==-1) { rhythm=&rhythm2[0]; rhythm_step=0; myTimer.begin(doRhythmus,1); } else { myTimer.end(); rhythm_step=-1; } }
-  if (tone==90) { if (rhythm_step==-1) { rhythm=&rhythm3[0]; rhythm_step=0; myTimer.begin(doRhythmus,1); } else { myTimer.end(); rhythm_step=-1; } }
+  if (tone==84) { rhythm=&rhythm1[0]; rhythm_step=0; myTimer.begin(doRhythmus,strum_delay*1000); }
+  if (tone==86) { rhythm=&rhythm2[0]; rhythm_step=0; myTimer.begin(doRhythmus,strum_delay*1000); }
+  if (tone==88) { rhythm=&rhythm3[0]; rhythm_step=0; myTimer.begin(doRhythmus,strum_delay*1000); }
   if (tone==72) { doWaitRhythmus(); pick1(); }
   if (tone==74) { doWaitRhythmus(); pick2(); }
   if (tone==76) { doWaitRhythmus(); pick3(); }
