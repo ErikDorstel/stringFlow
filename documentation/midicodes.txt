@@ -6,8 +6,10 @@ NoteOn 75: set minor chord
 NoteOn 78: strum down
 NoteOn 80: strum up
 NoteOn 82: strum down/up
-NoteOn 85: start/stop rhythmus 1
-NoteOn 87: start/stop rhythmus 2
+NoteOn 85: start/stop rhythmus
+NoteOn 84: start rhythmus 1
+NoteOn 86: start rhythmus 2
+NoteOn 88: start rhythmus 3
 NoteOn 72: pick string 1
 NoteOn 74: pick string 2
 NoteOn 76: pick string 3
