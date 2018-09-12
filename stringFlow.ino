@@ -21,11 +21,11 @@ AudioConnection          patchCord7(string6, 0, mixer2, 2);
 AudioConnection          patchCord8(mixer2, 0, i2s1, 0);
 AudioConnection          patchCord9(mixer2, 0, i2s1, 1);
 AudioControlSGTL5000     sgtl5000_1;
-IntervalTimer            myTimer;
+IntervalTimer            rhythmTimer;
 
-byte pick_delay=5; int strum_delay=300; volatile byte strum_dir=0;
-const int* chord=&maj_chord1[0][0]; byte chord_tone=48; byte chord_note=0; float chord_velocity=1;
-const int* rhythm=&rhythm1[0]; volatile int rhythm_step=-1;
+byte pickDelay=5; int strumDelay=300; byte strumDir=0;
+const int* chord=&majChord1[0][0]; byte chordTone=48; byte chordNote=0; float chordVelocity=1;
+const int* rhythm=&rhythm1[0]; volatile int rhythmStep=-1;
 
 void setup() {
   Serial1.begin(31250,SERIAL_8N1);
@@ -47,56 +47,56 @@ void loop() {
     MIDIpara1=255; MIDIpara2=255; } } } }
 
 void MIDIsetNoteOn(byte channel, byte tone, float velocity) {
-  chord_velocity=0.3+(velocity/127*0.7);
-  if (tone>=36 and tone<72) { chord_tone=tone+12; chord_note=chord_tone%12; }
-  if (tone==73) { if (chord==&maj_chord1[0][0]) { chord=&maj_chord2[0][0]; } else { chord=&maj_chord1[0][0]; } }
-  if (tone==75) { if (chord==&min_chord1[0][0]) { chord=&min_chord2[0][0]; } else { chord=&min_chord1[0][0]; } }
-  if (tone==78) { doWaitRhythmus(); strumDown(); strum_dir=1; }
-  if (tone==80) { doWaitRhythmus(); strumUp(); strum_dir=0; }
-  if (tone==82) { doWaitRhythmus(); if (strum_dir==0) { strumDown(); strum_dir=1; } else { strumUp(); strum_dir=0; } }
-  if (tone==85) { if (rhythm_step==-1) { rhythm=&rhythm1[0]; rhythm_step=0; myTimer.begin(doRhythmus,1); } else { myTimer.end(); rhythm_step=-1; } }
-  if (tone==84) { rhythm=&rhythm1[0]; rhythm_step=0; myTimer.begin(doRhythmus,strum_delay*1000); }
-  if (tone==86) { rhythm=&rhythm2[0]; rhythm_step=0; myTimer.begin(doRhythmus,strum_delay*1000); }
-  if (tone==88) { rhythm=&rhythm3[0]; rhythm_step=0; myTimer.begin(doRhythmus,strum_delay*1000); }
-  if (tone==72) { doWaitRhythmus(); pick1(); }
-  if (tone==74) { doWaitRhythmus(); pick2(); }
-  if (tone==76) { doWaitRhythmus(); pick3(); }
-  if (tone==77) { doWaitRhythmus(); pick4(); }
-  if (tone==79) { doWaitRhythmus(); pick5(); }
-  if (tone==81) { doWaitRhythmus(); pick6(); } }
+  chordVelocity=0.3+(velocity/127*0.7);
+  if (tone>=36 and tone<72) { chordTone=tone+12; chordNote=chordTone%12; }
+  if (tone==73) { if (chord==&majChord1[0][0]) { chord=&majChord2[0][0]; } else { chord=&majChord1[0][0]; } }
+  if (tone==75) { if (chord==&minChord1[0][0]) { chord=&minChord2[0][0]; } else { chord=&minChord1[0][0]; } }
+  if (tone==78) { doWaitRhythm(); strumDown(); strumDir=1; }
+  if (tone==80) { doWaitRhythm(); strumUp(); strumDir=0; }
+  if (tone==82) { doWaitRhythm(); if (strumDir==0) { strumDown(); strumDir=1; } else { strumUp(); strumDir=0; } }
+  if (tone==85) { if (rhythmStep==-1) { rhythm=&rhythm1[0]; rhythmStep=0; rhythmTimer.begin(doRhythm,1); } else { rhythmTimer.end(); rhythmStep=-1; } }
+  if (tone==84) { rhythm=&rhythm1[0]; rhythmStep=0; rhythmTimer.begin(doRhythm,strumDelay*1000); }
+  if (tone==86) { rhythm=&rhythm2[0]; rhythmStep=0; rhythmTimer.begin(doRhythm,strumDelay*1000); }
+  if (tone==88) { rhythm=&rhythm3[0]; rhythmStep=0; rhythmTimer.begin(doRhythm,strumDelay*1000); }
+  if (tone==72) { doWaitRhythm(); pick1(); }
+  if (tone==74) { doWaitRhythm(); pick2(); }
+  if (tone==76) { doWaitRhythm(); pick3(); }
+  if (tone==77) { doWaitRhythm(); pick4(); }
+  if (tone==79) { doWaitRhythm(); pick5(); }
+  if (tone==81) { doWaitRhythm(); pick6(); } }
 
 void MIDIsetNoteOff(byte channel, byte tone, byte velocity) { }
 
 void MIDIsetControl(byte channel, byte control, byte value) {
-  if (control==1) { strum_delay=50+((value)*3); }
-  if (control==7) { pick_delay=value+1; } }
+  if (control==1) { strumDelay=50+((value)*3); }
+  if (control==7) { pickDelay=value+1; } }
 
 void MIDIsetPitchbend(byte channel, word pitch) { }
 
 void strumDown() {
-  pick1(); delay(pick_delay); pick2(); delay(pick_delay); pick3(); delay(pick_delay);
-  pick4(); delay(pick_delay); pick5(); delay(pick_delay); pick6(); delay(pick_delay); }
+  pick1(); delay(pickDelay); pick2(); delay(pickDelay); pick3(); delay(pickDelay);
+  pick4(); delay(pickDelay); pick5(); delay(pickDelay); pick6(); delay(pickDelay); }
 
 void strumUp() {
-  pick6(); delay(pick_delay); pick5(); delay(pick_delay); pick4(); delay(pick_delay);
-  pick3(); delay(pick_delay); pick2(); delay(pick_delay); pick1(); delay(pick_delay); }
+  pick6(); delay(pickDelay); pick5(); delay(pickDelay); pick4(); delay(pickDelay);
+  pick3(); delay(pickDelay); pick2(); delay(pickDelay); pick1(); delay(pickDelay); }
   
-void pick1() { if (*(chord+(chord_note*6)+0)<255) { string1.noteOn((pow(2,(float(chord_tone+*(chord+(chord_note*6)+0))-69)/12))*440,chord_velocity); } }
-void pick2() { if (*(chord+(chord_note*6)+1)<255) { string2.noteOn((pow(2,(float(chord_tone+*(chord+(chord_note*6)+1))-69)/12))*440,chord_velocity); } }
-void pick3() { if (*(chord+(chord_note*6)+2)<255) { string3.noteOn((pow(2,(float(chord_tone+*(chord+(chord_note*6)+2))-69)/12))*440,chord_velocity); } }
-void pick4() { if (*(chord+(chord_note*6)+3)<255) { string4.noteOn((pow(2,(float(chord_tone+*(chord+(chord_note*6)+3))-69)/12))*440,chord_velocity); } }
-void pick5() { if (*(chord+(chord_note*6)+4)<255) { string5.noteOn((pow(2,(float(chord_tone+*(chord+(chord_note*6)+4))-69)/12))*440,chord_velocity); } }
-void pick6() { if (*(chord+(chord_note*6)+5)<255) { string6.noteOn((pow(2,(float(chord_tone+*(chord+(chord_note*6)+5))-69)/12))*440,chord_velocity); } }
+void pick1() { if (*(chord+(chordNote*6)+0)<255) { string1.noteOn((pow(2,(float(chordTone+*(chord+(chordNote*6)+0))-69)/12))*440,chordVelocity); } }
+void pick2() { if (*(chord+(chordNote*6)+1)<255) { string2.noteOn((pow(2,(float(chordTone+*(chord+(chordNote*6)+1))-69)/12))*440,chordVelocity); } }
+void pick3() { if (*(chord+(chordNote*6)+2)<255) { string3.noteOn((pow(2,(float(chordTone+*(chord+(chordNote*6)+2))-69)/12))*440,chordVelocity); } }
+void pick4() { if (*(chord+(chordNote*6)+3)<255) { string4.noteOn((pow(2,(float(chordTone+*(chord+(chordNote*6)+3))-69)/12))*440,chordVelocity); } }
+void pick5() { if (*(chord+(chordNote*6)+4)<255) { string5.noteOn((pow(2,(float(chordTone+*(chord+(chordNote*6)+4))-69)/12))*440,chordVelocity); } }
+void pick6() { if (*(chord+(chordNote*6)+5)<255) { string6.noteOn((pow(2,(float(chordTone+*(chord+(chordNote*6)+5))-69)/12))*440,chordVelocity); } }
 
-void doRhythmus() {
-  if (*(rhythm+rhythm_step)==0) { rhythm_step=0; }
-  if (*(rhythm+rhythm_step)==10) { rhythm_step++; myTimer.begin(doRhythmus,strum_delay*1000); }
-  else if (*(rhythm+rhythm_step)==1) { rhythm_step++; pick1(); myTimer.begin(doRhythmus,pick_delay*1000); }
-  else if (*(rhythm+rhythm_step)==2) { rhythm_step++; pick2(); myTimer.begin(doRhythmus,pick_delay*1000); }
-  else if (*(rhythm+rhythm_step)==3) { rhythm_step++; pick3(); myTimer.begin(doRhythmus,pick_delay*1000); }
-  else if (*(rhythm+rhythm_step)==4) { rhythm_step++; pick4(); myTimer.begin(doRhythmus,pick_delay*1000); }
-  else if (*(rhythm+rhythm_step)==5) { rhythm_step++; pick5(); myTimer.begin(doRhythmus,pick_delay*1000); }
-  else if (*(rhythm+rhythm_step)==6) { rhythm_step++; pick6(); myTimer.begin(doRhythmus,pick_delay*1000); } }
+void doRhythm() {
+  if (*(rhythm+rhythmStep)==0) { rhythmStep=0; }
+  if (*(rhythm+rhythmStep)==10) { rhythmStep++; rhythmTimer.begin(doRhythm,strumDelay*1000); }
+  else if (*(rhythm+rhythmStep)==1) { rhythmStep++; pick1(); rhythmTimer.begin(doRhythm,pickDelay*1000); }
+  else if (*(rhythm+rhythmStep)==2) { rhythmStep++; pick2(); rhythmTimer.begin(doRhythm,pickDelay*1000); }
+  else if (*(rhythm+rhythmStep)==3) { rhythmStep++; pick3(); rhythmTimer.begin(doRhythm,pickDelay*1000); }
+  else if (*(rhythm+rhythmStep)==4) { rhythmStep++; pick4(); rhythmTimer.begin(doRhythm,pickDelay*1000); }
+  else if (*(rhythm+rhythmStep)==5) { rhythmStep++; pick5(); rhythmTimer.begin(doRhythm,pickDelay*1000); }
+  else if (*(rhythm+rhythmStep)==6) { rhythmStep++; pick6(); rhythmTimer.begin(doRhythm,pickDelay*1000); } }
 
-void doWaitRhythmus() {
-  if (rhythm_step>-1) { rhythm_step=0; myTimer.begin(doRhythmus,1000000); } }
+void doWaitRhythm() {
+  if (rhythmStep>-1) { rhythmStep=0; rhythmTimer.begin(doRhythm,1000000); } }
