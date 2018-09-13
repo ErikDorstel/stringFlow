@@ -15,11 +15,11 @@ AudioConnection          patchCord1(string1, 0, mixer1, 0);
 AudioConnection          patchCord2(string2, 0, mixer1, 1);
 AudioConnection          patchCord3(string3, 0, mixer1, 2);
 AudioConnection          patchCord4(string4, 0, mixer1, 3);
-AudioConnection          patchCord5(mixer1, 0, mixer2, 0);
+AudioConnection          patchCord5(mixer1,  0, mixer2, 0);
 AudioConnection          patchCord6(string5, 0, mixer2, 1);
 AudioConnection          patchCord7(string6, 0, mixer2, 2);
-AudioConnection          patchCord8(mixer2, 0, i2s1, 0);
-AudioConnection          patchCord9(mixer2, 0, i2s1, 1);
+AudioConnection          patchCord8(mixer2,  0, i2s1,   0);
+AudioConnection          patchCord9(mixer2,  0, i2s1,   1);
 AudioControlSGTL5000     sgtl5000_1;
 IntervalTimer            rhythmTimer;
 
