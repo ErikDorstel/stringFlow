@@ -1,22 +1,22 @@
 # MIDI CODES
 #### https://de.wikipedia.org/wiki/Musical_Instrument_Digital_Interface#Nachrichtentypen
-* NoteOn 36 to 47: set chord C3 to B3
-* NoteOn 48 to 50: set chord C4 to B4
-* NoteOn 60 to 71: set chord C5 to B5
-* NoteOn 73: set major chord
-* NoteOn 75: set minor chord
-* NoteOn 78: strum down
-* NoteOn 80: strum up
-* NoteOn 82: strum down/up
-* NoteOn 85: start/stop rhythmus
-* NoteOn 84: start rhythmus 1
-* NoteOn 86: start rhythmus 2
-* NoteOn 88: start rhythmus 3
-* NoteOn 72: pick string 1
-* NoteOn 74: pick string 2
-* NoteOn 76: pick string 3
-* NoteOn 77: pick string 4
-* NoteOn 79: pick string 5
-* NoteOn 81: pick string 6
+* Note On 36 to 47: set chord C3 to B3
+* Note On 48 to 59: set chord C4 to B4
+* Note On 60 to 71: set chord C5 to B5
+* Note On 73: set major chord
+* Note On 75: set minor chord
+* Note On 78: strum down
+* Note On 80: strum up
+* Note On 82: strum down/up
+* Note On 85: start/stop rhythm
+* Note On 84: start rhythm 1
+* Note On 86: start rhythm 2
+* Note On 88: start rhythm 3
+* Note On 72: pick string 1 (E)
+* Note On 74: pick string 2
+* Note On 76: pick string 3
+* Note On 77: pick string 4
+* Note On 79: pick string 5
+* Note On 81: pick string 6 (E)
 * Control Change 1: set strum delay
 * Control Change 7: set pick delay
